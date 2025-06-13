@@ -18,7 +18,7 @@ type CVData struct {
 	Nome         string `json:"nome"`
 	Telefone	 string `json:"telefone"`
 	Email		string `json:"email"`
-	Links	   string `json:"links,omitempty"` // Campo opcional, pode ser vazio
+	Links	   string `json:"links,omitempty"` 
 	Cargo        string `json:"cargo"`
 	Experiencias string `json:"experiencias"`
 	Habilidades  string `json:"habilidades"`
@@ -29,27 +29,22 @@ type CVData struct {
 
 // --- Estruturas para a API do Gemini ---
 
-// GeminiRequest é a estrutura do corpo da requisição para a API Gemini.
 type GeminiRequest struct {
 	Contents []*Content `json:"contents"`
 }
 
-// Content contém as partes da mensagem.
 type Content struct {
 	Parts []*Part `json:"parts"`
 }
 
-// Part contém o texto do prompt.
 type Part struct {
 	Text string `json:"text"`
 }
 
-// GeminiResponse é a estrutura da resposta recebida da API Gemini.
 type GeminiResponse struct {
 	Candidates []*Candidate `json:"candidates"`
 }
 
-// Candidate contém o conteúdo gerado.
 type Candidate struct {
 	Content *Content `json:"content"`
 }
@@ -68,13 +63,11 @@ func main() {
 
 	app := fiber.New()
 
-	// Permite requisições do frontend
     app.Use(cors.New(cors.Config{
-        AllowOrigins: "http://localhost:5173", // ou "*" para liberar geral (não recomendado em produção)
+        AllowOrigins: "http://localhost:5173", // ou "*" para liberar geral (não recomendado fazer)
         AllowHeaders: "Origin, Content-Type, Accept",
     }))
 
-	// Endpoint para gerar o currículo
 	app.Post("/generate", func(c *fiber.Ctx) error {
 		var cvData CVData
 		if err := c.BodyParser(&cvData); err != nil {
@@ -85,7 +78,7 @@ func main() {
 		prompt := fmt.Sprintf(`
 Crie um currículo profissional, claro, bem estruturado e direto, para o(a) candidato(a) %s, com base nas informações fornecidas abaixo:
 
-- Telefone: %s  
+- **Telefone:** %s  
 - Email: %s  
 - Links (LinkedIn, GitHub, portfólio, etc.): %s  
 - Cargo desejado: %s
@@ -121,7 +114,6 @@ Gere o conteúdo pronto para ser entregue em formato .txt ou PDF.
 
 `, cvData.Nome, cvData.Telefone ,cvData.Email, cvData.Links, cvData.Cargo, cvData.Nome, cvData.Cargo, cvData.Experiencias, cvData.Habilidades, cvData.Formacao, cvData.Cursos, cvData.Idiomas)
 
-		// Prepara a requisição para a API do Gemini
 		geminiReqPayload := GeminiRequest{
 			Contents: []*Content{
 				{
@@ -134,17 +126,14 @@ Gere o conteúdo pronto para ser entregue em formato .txt ou PDF.
 			},
 		}
 
-		// Converte o payload para JSON
 		jsonReq, err := json.Marshal(geminiReqPayload)
 		if err != nil {
 			log.Printf("Erro ao converter a requisição para JSON: %v", err)
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Erro interno ao preparar a requisição"})
 		}
 		
-		// Define a URL da API do Gemini
 		geminiURL := fmt.Sprintf("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=%s", apiKey)
 
-		// Cria a requisição HTTP
 		req, err := http.NewRequest("POST", geminiURL, bytes.NewBuffer(jsonReq))
 		if err != nil {
 			log.Printf("Erro ao criar a requisição HTTP: %v", err)
@@ -152,7 +141,6 @@ Gere o conteúdo pronto para ser entregue em formato .txt ou PDF.
 		}
 		req.Header.Set("Content-Type", "application/json")
 
-		// Envia a requisição
 		client := &http.Client{}
 		resp, err := client.Do(req)
 		if err != nil {
@@ -161,7 +149,6 @@ Gere o conteúdo pronto para ser entregue em formato .txt ou PDF.
 		}
 		defer resp.Body.Close()
 		
-		// Verifica se a resposta da API foi bem-sucedida
 		if resp.StatusCode != http.StatusOK {
 			var errorBody map[string]interface{}
 			json.NewDecoder(resp.Body).Decode(&errorBody)
@@ -173,20 +160,17 @@ Gere o conteúdo pronto para ser entregue em formato .txt ou PDF.
 		}
 
 
-		// Decodifica a resposta da API
 		var geminiResp GeminiResponse
 		if err := json.NewDecoder(resp.Body).Decode(&geminiResp); err != nil {
 			log.Printf("Erro ao decodificar a resposta do Gemini: %v", err)
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Erro interno ao processar a resposta da API"})
 		}
 
-		// Extrai o conteúdo gerado
 		if len(geminiResp.Candidates) > 0 && len(geminiResp.Candidates[0].Content.Parts) > 0 {
 			message := geminiResp.Candidates[0].Content.Parts[0].Text
 			return c.JSON(fiber.Map{"curriculo": message})
 		}
 		
-		// Retorna um erro se não houver conteúdo na resposta
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "A API não retornou um currículo válido"})
 	})
 
