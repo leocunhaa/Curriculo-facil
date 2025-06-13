@@ -16,11 +16,15 @@ import (
 // CVData define os campos que recebemos do frontend.
 type CVData struct {
 	Nome         string `json:"nome"`
+	Telefone	 string `json:"telefone"`
+	Email		string `json:"email"`
+	Links	   string `json:"links,omitempty"` // Campo opcional, pode ser vazio
 	Cargo        string `json:"cargo"`
 	Experiencias string `json:"experiencias"`
 	Habilidades  string `json:"habilidades"`
 	Formacao     string `json:"formacao"`
 	Idiomas      string `json:"idiomas"`
+	Cursos	  string `json:"cursos,omitempty"` // Campo opcional, pode ser vazio
 }
 
 // --- Estruturas para a API do Gemini ---
@@ -79,32 +83,43 @@ func main() {
 
 		// Monta o prompt para a IA
 		prompt := fmt.Sprintf(`
-Crie um currículo profissional e bem estruturado para %s, com base nas seguintes informações:
+Crie um currículo profissional, claro, bem estruturado e direto, para o(a) candidato(a) %s, com base nas informações fornecidas abaixo:
 
-Cargo Desejado: %s
+- Telefone: %s  
+- Email: %s  
+- Links (LinkedIn, GitHub, portfólio, etc.): %s  
+- Cargo desejado: %s
 
-Resumo Profissional:
-(Crie um parágrafo conciso e impactante que resuma as qualificações e objetivos de %s para o cargo de %s)
+Resumo Profissional:  
+Crie um parágrafo conciso e impactante com no máximo 3 linhas que resuma as principais qualificações, experiências e objetivos profissionais de %s para a vaga de %s.
 
-Experiências Profissionais:
+Experiências Profissionais: 
 %s
 
-Habilidades Técnicas e Comportamentais:
+Habilidades Técnicas e Comportamentais:  
 %s
 
 Formação Acadêmica:
 %s
 
-Idiomas:
+Certificações e Cursos:  
 %s
 
----
-Instruções de formatação:
-- Organize o conteúdo claramente nas seções: "Resumo Profissional", "Experiência Profissional", "Habilidades", "Formação Acadêmica" e "Idiomas".
-- Use uma linguagem formal, clara e direta.
-- Não utilize emojis ou gírias.
-- Destaque os pontos mais relevantes para o cargo desejado.
-`, cvData.Nome, cvData.Cargo, cvData.Nome, cvData.Cargo, cvData.Experiencias, cvData.Habilidades, cvData.Formacao, cvData.Idiomas)
+Idiomas: 
+%s
+
+Instruções de formatação e estilo:
+- Estruture o currículo com seções bem divididas e com títulos claros: "Resumo Profissional", "Experiência Profissional", "Habilidades", "Formação Acadêmica", "Cursos e Certificados" e "Idiomas".
+- Utilize uma linguagem profissional, formal e objetiva.
+- Evite emojis, gírias, redundâncias ou destaques desnecessários como asteriscos.
+- Destaque os pontos mais relevantes de acordo com o cargo desejado, focando nos diferenciais do(a) candidato(a).
+- Elimine qualquer informação irrelevante ou repetida.
+- O objetivo é gerar um currículo que chame a atenção de recrutadores pela organização, clareza e alinhamento com a vaga de %s.
+
+Gere o conteúdo pronto para ser entregue em formato .txt ou PDF.
+
+
+`, cvData.Nome, cvData.Telefone ,cvData.Email, cvData.Links, cvData.Cargo, cvData.Nome, cvData.Cargo, cvData.Experiencias, cvData.Habilidades, cvData.Formacao, cvData.Cursos, cvData.Idiomas)
 
 		// Prepara a requisição para a API do Gemini
 		geminiReqPayload := GeminiRequest{

@@ -1,35 +1,57 @@
+/* Seu CSS base existente - Mantido */
 body {
   font-family: Arial, sans-serif;
   background: #f5f5f5;
-  padding: 2rem;
-  color: #333;
+  display: block; /* Permite rolagem */
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh; /* Garante que o fundo ocupe a tela toda */
 }
 
 .container {
-  max-width: 600px;
-  margin: auto;
+  width: 90%;
+  max-width: 700px;
   background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(32, 17, 245, 0.15);
+  text-align: center;
+  margin: 20px auto; /* Centraliza e adiciona margem vertical */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
 }
 
 input, textarea {
   width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 1px solid #cecbcb;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
 button {
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   background: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 button:hover {
@@ -38,4 +60,290 @@ button:hover {
 
 .resultado {
   margin-top: 2rem;
+  text-align: left;
+  /* overflow-x: auto; - Removi esta linha aqui pois não é mais necessária para o .resultado principal */
+  -webkit-overflow-scrolling: touch;
+  width: 100%; /* Garante que o .resultado ocupe a largura total do .container */
+}
+
+/* ---------------------------------------------------- */
+/* NOVAS ADIÇÕES E AJUSTES PARA A ANIMAÇÃO E BOTÕES     */
+/* ---------------------------------------------------- */
+
+.resultado-header {
+  display: flex;
+  justify-content: space-between; /* Alinha o h2 e o botão de toggle */
+  align-items: center;
+  margin-bottom: 1rem; /* Espaçamento entre o cabeçalho e o conteúdo do currículo */
+  padding: 0 10px; /* Adiciona um pequeno padding horizontal se o container tiver bordas arredondadas */
+}
+
+.resultado-header h2 {
+  margin: 0; /* Remove margens padrão do h2 dentro do header */
+  font-size: 1.5rem; /* Ajuste o tamanho do título "Currículo Gerado" */
+}
+
+.toggle-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: #6c757d; /* Cor para o botão de alternar */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap; /* Evita que o texto do botão quebre linha */
+}
+
+.toggle-button:hover {
+  background-color: #5a6268;
+}
+
+.curriculo-content {
+  max-height: 2000px; /* Altura máxima para o currículo expandido. Escolha um valor grande o suficiente. */
+  overflow: hidden; /* Esconde o conteúdo que transborda durante a transição */
+  transition: max-height 0.5s ease-out, opacity 0.5s ease-out; /* Animação suave */
+  opacity: 1; /* Totalmente visível por padrão */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.233); /* Sombra sutil para o bloco do currículo */
+  border-radius: 8px; /* Borda arredondada para o bloco do currículo */
+  /* As margens e paddings do #curriculo-pdf AGORA vêm de DENTRO deste container */
+  margin-bottom: 1rem; /* Espaçamento entre o currículo fechado/aberto e os botões */
+  background-color: rgb(255, 255, 255); /* Garante que a área do currículo tenha fundo branco */
+}
+
+.curriculo-content.hidden {
+  max-height: 0; /* Colapsa a altura para esconder */
+  opacity: 0; /* Torna transparente */
+  /* Zera paddings e margens para não ocupar espaço quando escondido */
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important; /* Garante que não haja borda visível */
+  box-shadow: none !important; /* Remove sombra quando escondido */
+}
+
+.download-buttons {
+  margin-top: 1rem; /* Espaçamento acima dos botões de download */
+  display: flex;
+  align-items: left; /* Alinha os botões à esquerda */ 
+  justify-content: left ; /* Centraliza os botões */
+  flex-wrap: wrap; /* Permite que os botões quebrem linha */
+  gap: 10px; /* Espaçamento entre os botões */
+}
+
+/* ---------------------------------------------------- */
+/* AJUSTES FINAIS PARA ESPAÇAMENTO COMPACTO DO CONTEÚDO DO CURRÍCULO */
+/* Estas regras se aplicam ao #curriculo-pdf que está DENTRO de .curriculo-content */
+/* ---------------------------------------------------- */
+
+#curriculo-pdf {
+  max-width: 100%;
+  padding: 10px; /* Mantém o padding geral um pouco menor dentro do container de animação */
+  background-color: white;
+  color: #000;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+
+  font-size: 10.5pt; /* Mantém a fonte ligeiramente menor */
+  line-height: 1.35; /* Ajustei ligeiramente para 1.35 */
+
+  margin-bottom: 0 !important; /* IMPORTANTE: Garante que o div interno não adicione margem extra */
+  margin-top: 0 !important;
+}
+
+/* Redução forte de margens e paddings para todos os elementos comuns */
+#curriculo-pdf p,
+#curriculo-pdf ul,
+#curriculo-pdf ol,
+#curriculo-pdf li,
+#curriculo-pdf h2,
+#curriculo-pdf h3,
+#curriculo-pdf h4,
+#curriculo-pdf h5,
+#curriculo-pdf h6 {
+  margin: 0 !important; /* Zera todas as margens por padrão */
+  padding: 0 !important; /* Zera todos os paddings por padrão */
+  line-height: 1.3 !important; /* Garante line-height compacto para todos */
+}
+
+/* Espaçamento específico para títulos de seção */
+#curriculo-pdf h2,
+#curriculo-pdf h3,
+#curriculo-pdf h4,
+#curriculo-pdf h5,
+#curriculo-pdf h6 {
+  margin-top: 0.8em !important; /* Espaçamento acima do título */
+  margin-bottom: 0.3em !important; /* Espaçamento abaixo do título, para separá-lo do conteúdo */
+}
+
+/* Ajustes para listas */
+#curriculo-pdf ul,
+#curriculo-pdf ol {
+  padding-left: 1.5em !important; /* Recuo para as listas */
+  margin-top: 0.3em !important; /* Pequena margem acima da lista */
+}
+
+#curriculo-pdf li {
+  margin-bottom: 0.1em !important; /* Espaçamento entre os itens da lista */
+}
+
+/* Ajustes para o primeiro elemento após um título (pode ser um p ou ul) */
+#curriculo-pdf h2 + p,
+#curriculo-pdf h3 + p,
+#curriculo-pdf h4 + p,
+#curriculo-pdf h5 + p,
+#curriculo-pdf h6 + p,
+#curriculo-pdf h2 + ul,
+#curriculo-pdf h3 + ul,
+#curriculo-pdf h4 + ul,
+#curriculo-pdf h5 + ul,
+#curriculo-pdf h6 + ul,
+#curriculo-pdf h2 + ol,
+#curriculo-pdf h3 + ol,
+#curriculo-pdf h4 + ol,
+#curriculo-pdf h5 + ol,
+#curriculo-pdf h6 + ol {
+    margin-top: 0 !important; /* Zera a margem superior do primeiro elemento logo após o título */
+    padding-top: 0 !important;
+}
+
+/* Remover margens de tags comuns para garantir controle total */
+#curriculo-pdf div,
+#curriculo-pdf span,
+#curriculo-pdf strong,
+#curriculo-pdf em,
+#curriculo-pdf a {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Regras para tabelas e blocos de código (se o Markdown gerar) */
+#curriculo-pdf table,
+#curriculo-pdf pre {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+  word-break: break-all;
+  margin: 0.5em 0 !important;
+  padding: 0.5em !important;
+}
+
+#curriculo-pdf code {
+  word-break: break-all;
+}
+
+/* Oculta parágrafos vazios gerados por quebras de linha excessivas no Markdown */
+#curriculo-pdf p:empty {
+  display: none !important;
+}
+
+
+/* ---------------------------------------------------- */
+/* Estilos específicos para impressão (html2pdf.js)     */
+/* ---------------------------------------------------- */
+@media print {
+  body {
+    background: none;
+    display: block;
+    height: auto;
+    margin: 0;
+  }
+
+  .container {
+    width: auto;
+    max-width: none;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Oculta botões e elementos de controle na impressão */
+  button,
+  .resultado button,
+  .download-buttons,
+  .resultado-header, /* Oculta o cabeçalho completo na impressão */
+  .toggle-button /* Garante que o botão de toggle não apareça na impressão */
+  {
+    display: none !important;
+  }
+
+  /* Garante que o container do currículo esteja totalmente visível para impressão */
+  .curriculo-content {
+    max-height: none !important; /* Garante que o conteúdo esteja totalmente visível para impressão */
+    opacity: 1 !important; /* Garante que seja totalmente opaco para impressão */
+    overflow: visible !important; /* Garante que o conteúdo não seja cortado */
+    margin: 0 !important; /* Remove margens extras */
+    padding: 0 !important; /* Remove paddings extras */
+    box-shadow: none !important; /* Remove sombra na impressão */
+    border-radius: 0 !important; /* Remove bordas arredondadas na impressão */
+  }
+
+
+  #curriculo-pdf {
+    width: 100%;
+    /* Consolidei todos os paddings aqui para o PDF */
+    padding: 0.2in 0.2in 0.1in 0.2in !important; /* Top Right Bottom Left - Ajuste o bottom para ser menor */
+    background-color: white !important;
+    color: #000 !important;
+    font-size: 10pt !important; /* Fonte menor para PDF */
+    line-height: 1.25 !important; /* Linha de altura mais compacta para PDF */
+    margin-bottom: 0 !important;
+  }
+
+  /* Redução forte de margens e paddings para todos os elementos comuns NO PDF */
+  #curriculo-pdf p,
+  #curriculo-pdf ul,
+  #curriculo-pdf ol,
+  #curriculo-pdf li,
+  #curriculo-pdf h2,
+  #curriculo-pdf h3,
+  #curriculo-pdf h4,
+  #curriculo-pdf h5,
+  #curriculo-pdf h6 {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important; /* Linha de altura mais compacta para todos no PDF */
+  }
+
+  /* Espaçamento específico para títulos de seção NO PDF */
+  #curriculo-pdf h2,
+  #curriculo-pdf h3,
+  #curriculo-pdf h4,
+  #curriculo-pdf h5,
+  #curriculo-pdf h6 {
+    margin-top: 0.5em !important; /* Espaçamento acima do título no PDF */
+    margin-bottom: 0.2em !important; /* Espaçamento abaixo do título no PDF */
+  }
+
+  /* Ajustes para listas NO PDF */
+  #curriculo-pdf ul,
+  #curriculo-pdf ol {
+    padding-left: 1.2em !important; /* Recuo para as listas no PDF */
+    margin-top: 0.2em !important; /* Pequena margem acima da lista no PDF */
+  }
+
+  #curriculo-pdf li {
+    margin-bottom: 0.05em !important; /* Espaçamento bem pequeno entre os itens da lista no PDF */
+  }
+
+  /* Ajustes para o primeiro elemento após um título NO PDF */
+  #curriculo-pdf h2 + p,
+  #curriculo-pdf h3 + p,
+  #curriculo-pdf h4 + p,
+  #curriculo-pdf h5 + p,
+  #curriculo-pdf h6 + p,
+  #curriculo-pdf h2 + ul,
+  #curriculo-pdf h3 + ul,
+  #curriculo-pdf h4 + ul,
+  #curriculo-pdf h5 + ul,
+  #curriculo-pdf h6 + ul,
+  #curriculo-pdf h2 + ol,
+  #curriculo-pdf h3 + ol,
+  #curriculo-pdf h4 + ol,
+  #curriculo-pdf h5 + ol,
+  #curriculo-pdf h6 + ol {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+  }
 }
