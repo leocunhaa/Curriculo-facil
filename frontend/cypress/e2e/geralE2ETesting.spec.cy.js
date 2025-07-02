@@ -5,7 +5,7 @@ describe('Currículo Fácil - Geração de Currículo Inteligente com Faker.js',
 
   const selectors = {
     nameInput: 'input[type=text]:nth-child(1)',
-    phoneInput: '#root > div > form > input[type=tel]:nth-child(2)',
+    phoneInput: 'input[type=tel]:nth-child(2)',
     emailInput: 'input:nth-child(3)',
     linkedinTextarea: 'textarea:nth-child(4)',
     positionInput: 'input[type=text]:nth-child(5)',
@@ -37,42 +37,43 @@ describe('Currículo Fácil - Geração de Currículo Inteligente com Faker.js',
       .should('exist')
       .type(randomName);
 
-    form.find(selectors.phoneInput)
+    cy.get(selectors.phoneInput)
       .should('exist')
       .type(randomPhone);
 
-    form.find(selectors.emailInput)
+    cy.get(selectors.emailInput)
       .should('exist')
       .type(randomEmail);
 
-    form.find(selectors.linkedinTextarea)
+    cy.get(selectors.linkedinTextarea)
       .should('exist')
       .type('https://www.youtube.com/watch?v=hQ01th1G1AE'); 
-      
-    form.find(selectors.positionInput)
+
+    cy.get(selectors.positionInput)
       .should('exist')
       .type(faker.person.jobTitle()); 
-    form.find(selectors.experienceTextarea)
+
+    cy.get(selectors.experienceTextarea)
       .should('exist')
       .type(faker.lorem.paragraphs(2)); 
 
-    form.find(selectors.skillsTextarea)
+    cy.get(selectors.skillsTextarea)
       .should('exist')
       .type('Cypress, React, Node.js, Java, Python, SQL, MongoDB, Docker, Kubernetes, Selenium, Git, Agile, Scrum, Kanban, Test Automation, Continuous Integration, Continuous Deployment, DevOps, Cloud Computing, Microservices, RESTful APIs, GraphQL, Web Development, Mobile Development, UI/UX Design, Performance Optimization, Security Best Practices');
 
-    form.find(selectors.educationTextarea)
+    cy.get(selectors.educationTextarea)
       .should('exist')
       .type('Graduação completa em Ciência da Computação pela Universidade Federal de Campina Grande, MBA em Engenharia de Software pela PUC-Rio');
 
-    form.find(selectors.certificationsTextarea)
+    cy.get(selectors.certificationsTextarea)
       .should('exist')
       .type('CTFL, AWS Practitioner, Scrum Master, Docker Certified Associate');
 
-    form.find(selectors.languagesTextarea)
+    cy.get(selectors.languagesTextarea)
       .should('exist')
       .type('Ingles B2, Portugues Nativo, Espanhol A2');
 
-    form.find(selectors.submitButton)
+    cy.get(selectors.submitButton)
       .should('exist')
       .click();
 
